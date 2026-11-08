@@ -10,7 +10,7 @@
 
 static const struct setting_define replication_setting_defines[] = {
 	DEF(STR, mail_replica),
-	DEF(UINT, replication_sync_timeout),
+	DEF(TIME, replication_sync_timeout),
 	DEF(BOOL, noreplicate),
 
 	SETTING_DEFINE_LIST_END
