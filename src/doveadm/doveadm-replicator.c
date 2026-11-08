@@ -163,7 +163,7 @@ static void cmd_replicator_status(struct doveadm_cmd_context *cctx)
 			break;
 		T_BEGIN {
 			args = t_strsplit_tabescaped(line);
-			if (str_array_length(args) >= 6 &&
+			if (str_array_length(args) >= 7 &&
 			    str_to_time(args[2], &last_fast) == 0 &&
 			    str_to_time(args[3], &last_full) == 0 &&
 			    str_to_time(args[5], &last_success) == 0 &&
