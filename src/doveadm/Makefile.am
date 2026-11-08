@@ -26,6 +26,7 @@ AM_CPPFLAGS = \
 	-I$(top_srcdir)/src/lib-imap \
 	-I$(top_srcdir)/src/lib-index \
 	-I$(top_srcdir)/src/lib-storage \
+	-I$(top_srcdir)/src/plugins/replication \
 	-I$(top_srcdir)/src/lib-imap-storage \
 	-I$(top_srcdir)/src/lib-http \
 	-I$(top_srcdir)/src/lib-dcrypt \
@@ -98,11 +99,13 @@ doveadm_common_cmds = \
 	doveadm-master.c \
 	doveadm-mutf7.c \
 	doveadm-penalty.c \
+	doveadm-replicator.c \
 	doveadm-sis.c \
 	doveadm-stats.c \
 	doveadm-who.c
 
 doveadm_common_mail_cmds = \
+	../plugins/replication/replication-settings.c \
 	doveadm-dsync.c \
 	doveadm-mail.c \
 	doveadm-mail-altmove.c \

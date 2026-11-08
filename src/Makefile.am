@@ -82,6 +82,7 @@ SUBDIRS = \
 	lmtp \
 	log \
 	config \
+	replication \
 	util \
 	doveadm \
 	stats \

@@ -1,0 +1,83 @@
+/* Copyright (c) 2013-2018 Dovecot authors, see the included COPYING file */
+
+#include "lib.h"
+#include "settings-parser.h"
+#include "service-settings.h"
+#include "replicator-settings.h"
+
+struct event_category event_category_replication = {
+	.name = "replication"
+};
+
+struct service_settings replicator_service_settings = {
+	.name = "replicator",
+	.protocol = "",
+	.type = "",
+	.executable = "replicator",
+	.user = "",
+	.group = "",
+	.privileged_group = "",
+	.extra_groups = ARRAY_INIT,
+	.chroot = "",
+
+	.drop_priv_before_exec = FALSE,
+
+	.process_min_avail = 0,
+	.process_limit = 1,
+	.client_limit = 0,
+	.idle_kill_interval = SET_TIME_INFINITE,
+	.vsz_limit = UOFF_T_MAX,
+
+	.unix_listeners = ARRAY_INIT,
+	.fifo_listeners = ARRAY_INIT,
+	.inet_listeners = ARRAY_INIT,
+
+	.process_limit_1 = TRUE
+};
+
+const struct setting_keyvalue replicator_service_settings_defaults[] = {
+	{ "unix_listener", "replicator replicator-doveadm" },
+	{ "unix_listener/replicator/path", "replicator" },
+	{ "unix_listener/replicator/mode", "0600" },
+	{ "unix_listener/replicator/user", "$SET:default_internal_user" },
+	{ "unix_listener/replicator-doveadm/path", "replicator-doveadm" },
+	{ "unix_listener/replicator-doveadm/type", "doveadm" },
+	{ "unix_listener/replicator-doveadm/mode", "0" },
+	{ "unix_listener/replicator-doveadm/user", "$SET:default_internal_user" },
+	{ NULL, NULL }
+};
+
+#undef DEF
+#define DEF(type, name) \
+	SETTING_DEFINE_STRUCT_##type(#name, name, struct replicator_settings)
+
+static const struct setting_define replicator_setting_defines[] = {
+	DEF(STR, auth_socket_path),
+	DEF(STR, doveadm_socket_path),
+	DEF(STR, replication_dsync_parameters),
+
+	DEF(TIME, replication_full_sync_interval),
+	DEF(UINT, replication_max_conns),
+
+	SETTING_DEFINE_LIST_END
+};
+
+const struct replicator_settings replicator_default_settings = {
+	.auth_socket_path = "auth-userdb",
+	.doveadm_socket_path = "doveadm-server",
+	.replication_dsync_parameters = "-d -N -l 30 -U",
+
+	.replication_full_sync_interval = 60*60*24,
+	.replication_max_conns = 10
+};
+
+const struct setting_parser_info replicator_setting_parser_info = {
+	.name = "replicator",
+	.defines = replicator_setting_defines,
+	.defaults = &replicator_default_settings,
+
+	.struct_size = sizeof(struct replicator_settings),
+	.pool_offset1 = 1 + offsetof(struct replicator_settings, pool),
+};
+
+const struct replicator_settings *replicator_settings;
